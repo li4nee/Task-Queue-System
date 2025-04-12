@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Query,Req,Res, UseGuards} from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Post, Put, Query,Req,Res, UseGuards} from "@nestjs/common";
 import { Response } from "express";
 import { LoginDto, loginSchema, LoginSwaggerDto, RegisterDto, registerSchema, RegisterSwaggerDto } from "./dto/auth.dto";
 import { AuthService } from "./auth.service";
@@ -15,7 +15,7 @@ export class AuthController {
 
     @Post("/login")    
     @ApiBody({ type:LoginSwaggerDto})
-    @ApiResponse({ status: 200, description: 'Login successfull', schema: {
+    @ApiResponse({ status: 201, description: 'Login successfull', schema: {
         example: {
           message: 'Login successfull',
           token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6...'
@@ -32,12 +32,13 @@ export class AuthController {
        let result = await this.authService.login(data);
        if(result.token)
          setCookie(result.token,res) 
-       return res.status(200).json({message:result.message,token:result.token});
+       return res.status(201).json({message:result.message,token:result.token});
     }
 
     @Post("/register")
     @ApiBody({ type:RegisterSwaggerDto})
     @UseBruteForceLimit({blockDuration:60*30,requestLimit:10,timeLimit:60*10,keyType:'LOGIN'})
+    @HttpCode(201)
     async register(@Body()Body:RegisterDto) {
          let data = registerSchema.validateSync(Body);
          let result = await this.authService.register(data);

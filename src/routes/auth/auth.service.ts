@@ -81,6 +81,7 @@ export class AuthService {
         clearCookie(res)
         return {message:"Logout successfull"}
     }
+    
     // HELPER FUNCTIONS
     private async checkForExistingEmail(email:string)
     {

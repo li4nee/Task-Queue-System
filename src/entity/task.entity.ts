@@ -1,7 +1,8 @@
 import { TASK_PRIORITY, TASK_STATUS, TASK_TYPE } from 'src/types/base.type';
-import { Entity, Column, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { User } from './user.entity';
 import { GlobalEntity } from './global.entity';
+import { RetryTaskLog } from './retryLog.entity';
 
 /**
  * Represents a Task entity stored in the database.
@@ -80,6 +81,10 @@ export class Task extends GlobalEntity {
    */
   @Column({ type: 'timestamp', nullable: true })
   failedAt: Date;
+
+  @OneToMany(() => RetryTaskLog, (retryTaskLog) => retryTaskLog.task,{nullable: true})
+  @JoinColumn()
+  retryLogs: RetryTaskLog[];
 }
 
   
