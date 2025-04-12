@@ -26,13 +26,20 @@ async function bootstrap() {
     console.log("Migrations ran successfully");
   }
 
+  app.setGlobalPrefix("api/v1");
   // use swagger for api documentation
   if(globalSettings.WORK_ENVIRONMENT!=="PRODUCTION")
   {
     const config = new DocumentBuilder()
-      .setTitle("NEST JS STARTER PACKAGE")
-      .setDescription("API DESCRIPTION FOR NEST JS STARTER PACKAGE")
+      .setTitle("TASK QUEUE SYSTEM API")
+      .setDescription("API DESCRIPTION FOR TASK QUEUE SYSTEM")
       .setVersion("1.0")
+      .setBasePath("api/v1")
+      .addCookieAuth("token", {
+        type: "http",
+        in: "cookie",
+        description: "JWT Token",
+      })
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup("swagger", app, document);
@@ -43,7 +50,6 @@ async function bootstrap() {
 
   // set global prefix for api routes and enable CORS
   app.enableCors({ origins: "*" });
-  app.setGlobalPrefix("api/v1");
 
   await app.listen(globalSettings.PORT);
   console.log(`Application is running on port ${globalSettings.PORT}`);
